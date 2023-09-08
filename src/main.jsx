@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom/client'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { Navigate } from 'react-router-dom';
 import './index.css'
+import App from './App';
 
-function App() {
 
-  return (
-    <h1>Vite</h1>
-  );
-};
-
-ReactDOM.createRoot(document.getElementById('root')).render(<App />)
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <App />
+);
