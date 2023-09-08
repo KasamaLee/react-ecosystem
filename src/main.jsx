@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import axios from 'axios';
 import './index.css'
 
@@ -55,24 +57,87 @@ function ProfilePage() {
 }
 
 function FriendPage() {
-  return <div className='App'>Friend Page</div>;
+  const { userId } = useParams();
+  const [friend, setFriend] = useState(null);
+
+  const fetchFriendDetail = async () => {
+    try {
+      const { data } = await axios.get(`/users/${userId}`);
+      setFriend(data);
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFriendDetail();
+  }, [])
+
+  return <div className='App'>
+    {friend && (
+      <div className='friend'>
+        <h3>{friend.name}</h3>
+      </div>
+    )}
+  </div>;
 }
 
 function FeedPage() {
   return <div className='App'>Feed Page</div>
 }
 
+function NotFoundPage() {
+  return <div className='App'>404 : Not Found</div>;
+}
+
+function AppLayout() {
+  return (
+    <>
+      <div>
+        <Link to='/'>home</Link>
+        <Link to='/profile'>profile</Link>
+        <Link to='/profile/5'>friend</Link>
+        <Link to='/feed'>feed</Link>
+      </div>
+      <div>
+        <Outlet />
+      </div>
+    </>
+  )
+}
+
 ReactDOM.createRoot(document.getElementById('root')).render(
+
   <BrowserRouter>
-    <Link to="/">home</Link>
-    <Link to="/profile">profile</Link>
-    <Link to="/friend">friend</Link>
-    <Link to="/feed">feed</Link>
     <Routes>
-      <Route path='/' element={<HomePage />} />
-      <Route path='/profile' element={<ProfilePage />} />
-      <Route path='/friend' element={<div>Friend Page</div>} />
-      <Route path='/feed' element={<div>Feed Page</div>} />
+      {/* Parent : Layout */}
+      <Route path='/' element={<AppLayout />} >
+        {/* Child : <Outlet /> */}
+        <Route path='' element={<HomePage />} />
+        <Route path='profile' element={<ProfilePage />} />
+        <Route path='/profile/:userId' element={<FriendPage />} />
+        <Route path='/feed' element={<FeedPage />} />
+        <Route path='*' element={<Navigate to='/feed' />} />
+      </Route>
     </Routes>
   </BrowserRouter>
+
 );
+
+
+/*
+<BrowserRouter>
+  <Link to="/">home</Link>
+  <Link to="/profile">profile</Link>
+  <Link to="/profile/1">friend</Link>
+  <Link to="/feed">feed</Link>
+  <Routes>
+    <Route path='/' element={<HomePage />} />
+    <Route path='/profile' element={<ProfilePage />} />
+    <Route path='/profile/:userId' element={<FriendPage />} />
+    <Route path='/feed' element={<FeedPage />} />
+    <Route path='*' element={<Navigate to='/feed' />} />
+  </Routes>
+</BrowserRouter>
+*/
