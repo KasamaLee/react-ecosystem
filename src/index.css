@@ -19,3 +19,16 @@ button {
   border-radius: 5px;
   cursor: pointer;
 }
+
+a {
+  padding: 10px;
+  text-transform: uppercase;
+}
+
+.friend {
+  padding: 10px 30px;
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 400px;
+  cursor: pointer;
+}
